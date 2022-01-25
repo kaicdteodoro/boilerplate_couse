@@ -14,13 +14,17 @@ use App\Http\Controllers\PostController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::controller(AuthController::class)->group(function () {
+    Route::get('/', 'login')->name('login');
+    Route::get('/register', 'register')->name('register');
+    Route::post('/signin', 'signin')->name('signin');
+    Route::post('/signup', 'signup')->name('signup');
+    Route::get('/logout', 'logout')->name('logout')->middleware('auth');
+});
 
-Route::get('/', [AuthController::class, 'login'])->name('login');
-Route::get('/register', [AuthController::class, 'register'])->name('register');
-Route::post('/signin', [AuthController::class, 'signin'])->name('signin');
-Route::post('/signup', [AuthController::class, 'signup'])->name('signup');
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-
-Route::get('dashboard', function () {
-    return view('dashboard');
-})->name('dashboard')->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::resource('posts', PostController::class);
+    Route::get('dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
