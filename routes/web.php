@@ -21,6 +21,9 @@ Route::post('/signin', [AuthController::class, 'signin'])->name('signin');
 Route::post('/signup', [AuthController::class, 'signup'])->name('signup');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('dashboard', function () {
-    return view('dashboard');
-})->name('dashboard')->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::resource('posts', PostController::class);
+    Route::get('dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
